@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/k8s-proxmox/proxmox-go/rest"
+	"github.com/go-logr/logr"
 )
 
 var (
@@ -22,6 +23,8 @@ var (
 
 type Service struct {
 	restclient *rest.RESTClient
+
+	logger logr.Logger
 }
 
 type Params struct {
@@ -130,6 +133,10 @@ func NewServiceWithAPIToken(url, tokenid, secret string, insecure bool) (*Servic
 
 func (s *Service) RESTClient() *rest.RESTClient {
 	return s.restclient
+}
+
+func (s *Service) SetLogger(logger logr.Logger) {
+	s.logger = logger
 }
 
 func makeLoginOpts(authConfig AuthConfig) (rest.ClientOption, error) {

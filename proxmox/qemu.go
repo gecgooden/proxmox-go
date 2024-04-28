@@ -90,15 +90,18 @@ func (s *Service) VirtualMachineFromUUID(ctx context.Context, uuid string) (*Vir
 	for _, node := range nodes {
 		vms, err := s.restclient.GetVirtualMachines(ctx, node.Node)
 		if err != nil {
+			s.logger.Info("Unable to get VMs for %s: %%", node.Node, err)
 			continue
 		}
 		for _, vm := range vms {
 			config, err := s.restclient.GetVirtualMachineConfig(ctx, node.Node, vm.VMID)
 			if err != nil {
+				s.logger.Info("Unable to get VM config for %s %d: %%", node.Node, vm.VMID, err)
 				continue
 			}
 			vmuuid, err := ConvertSMBiosToUUID(config.SMBios1)
 			if err != nil {
+				s.logger.Info("Unable to convert SMBios to UUID for %s %d: %%", node.Node, vm.VMID, err)		
 				continue
 			}
 			if vmuuid == uuid {
